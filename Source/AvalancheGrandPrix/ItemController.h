@@ -24,13 +24,16 @@ public:
 
 private:
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
-		void ActivateHeldItem(FVector uPlayer, AActor* aItem, bool bIsBeingHeld);
+		void ActivateHeldItem(FVector uSpawnPosition, AActor* aItem, bool bIsBeingHeld);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
 		void ShowHeldItemUI(AActor* aItem, bool bIsAPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
-		void StoreHeldItem(AActor* aItem);
+		void SetHeldItem(TSubclassOf<AActor> aHeldItem);
+
+	UFUNCTION(BlueprintCallable, Category = "Item Handling")
+		TSubclassOf<class AActor> GetHeldItem();
 
 protected:
 	// Called when the game starts
@@ -43,5 +46,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		FVector ItemSpawnFront;
 
-
+	UPROPERTY(BlueprintReadOnly)
+		TSubclassOf<AActor> HeldItem;
 };

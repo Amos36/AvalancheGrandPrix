@@ -17,14 +17,25 @@ UItemController::UItemController()
 // Description: Used to spawn the item and determine where and how it spawns.
 // 
 // Date Created: 06/07/22
-// Last Updated: 06/09/22
+// Last Updated: 06/18/22
 // 
 // Author(s): Jordan R. Douglas
-void UItemController::ActivateHeldItem(FVector uPlayer, AActor* aItem, bool bIsBeingHeld)
+void UItemController::ActivateHeldItem(FVector uSpawnPosition, AActor* aItem, bool bIsBeingHeld)
 {
-	//uMesh->SetRelativeTransform(uPlayerMesh->GetRelativeTransform());
-	aItem->SetActorLocation(uPlayer);
-	
+	if (HeldItem == nullptr)
+		return;
+
+	if (bIsBeingHeld)
+	{
+		//If the Action Key is being held, then the item spawns behind the Player.
+		//NOTE! Some items will have no need to spawn behind the Player.
+		aItem->SetActorLocation(-uSpawnPosition);
+	}
+	else
+	{
+		aItem->SetActorLocation(uSpawnPosition);
+	}
+	HeldItem = nullptr;
 }
 
 // Function: Show Held Item UI
@@ -41,27 +52,36 @@ void UItemController::ShowHeldItemUI(AActor* aItem, bool bIsAPlayer)
 		return;
 }
 
-// Function: Store Held Item
+// Function: Set Held Item
 // Description: Helps store the item to the Player that interacts with a Mystery Box
 //	so that it may be called later with ActivateHeldItem().
 // 
 // Date Created: 06/07/22
-// Last Updated: 06/09/22
+// Last Updated: 06/18/22
 // 
 // Author(s): Jordan R. Douglas
-void UItemController::StoreHeldItem(AActor* aItem)
+void UItemController::SetHeldItem(TSubclassOf<class AActor> aHeldItem)
 {
-
+	HeldItem = aHeldItem;
 }
 
+// Function: Get Held Item
+// Description: Finds Held Item and returns the information on what Actor
+//	(the Item in this case) it needs to return for reference.
+// 
+// Date Created: 06/18/22
+// Last Updated: 06/18/22
+// 
+// Author(s): Jordan R. Douglas
+TSubclassOf<class AActor> UItemController::GetHeldItem()
+{
+	return HeldItem;
+}
 
 // Called when the game starts
 void UItemController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
 
@@ -69,7 +89,5 @@ void UItemController::BeginPlay()
 void UItemController::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
