@@ -29,13 +29,14 @@ void UItemController::ActivateHeldItem(FVector uSpawnPosition, AActor* aItem, bo
 	{
 		//If the Action Key is being held, then the item spawns behind the Player.
 		//NOTE! Some items will have no need to spawn behind the Player.
-		aItem->SetActorLocation(-uSpawnPosition);
+		aItem->SetActorLocation(-uSpawnPosition + uAdjustSpawn);
 	}
 	else
 	{
-		aItem->SetActorLocation(uSpawnPosition);
+		aItem->SetActorLocation(uSpawnPosition + uAdjustSpawn);
 	}
 	HeldItem = nullptr;
+	uAdjustSpawn = FVector::ZeroVector;
 }
 
 // Function: Show Held Item UI
@@ -60,9 +61,10 @@ void UItemController::ShowHeldItemUI(AActor* aItem, bool bIsAPlayer)
 // Last Updated: 06/18/22
 // 
 // Author(s): Jordan R. Douglas
-void UItemController::SetHeldItem(TSubclassOf<class AActor> aHeldItem)
+void UItemController::SetHeldItem(TSubclassOf<class AActor> aHeldItem, FVector ItemPositionAdjustment)
 {
 	HeldItem = aHeldItem;
+	uAdjustSpawn = ItemPositionAdjustment;
 }
 
 // Function: Get Held Item

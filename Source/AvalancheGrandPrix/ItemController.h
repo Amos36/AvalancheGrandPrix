@@ -30,10 +30,12 @@ private:
 		void ShowHeldItemUI(AActor* aItem, bool bIsAPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
-		void SetHeldItem(TSubclassOf<AActor> aHeldItem);
+		void SetHeldItem(TSubclassOf<AActor> aHeldItem, FVector ItemPositionAdjustment);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
 		TSubclassOf<class AActor> GetHeldItem();
+
+	FVector uAdjustSpawn;
 
 protected:
 	// Called when the game starts
