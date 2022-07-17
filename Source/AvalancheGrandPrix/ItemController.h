@@ -48,6 +48,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		FVector ItemSpawnFront;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 		TSubclassOf<AActor> HeldItem;
 };
