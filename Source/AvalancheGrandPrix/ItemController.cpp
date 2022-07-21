@@ -12,6 +12,65 @@ UItemController::UItemController()
 	// ...
 }
 
+void UItemController::DetermineItem(int WhichPool, int WhichItemFromPool)
+{
+	switch (WhichPool)
+	{
+		//BEST ITEM POOL
+	case 0:
+	{
+		switch (WhichItemFromPool)
+		{
+		case 0:
+		{
+			HeldItem = Items[1]; //Blue Snowball
+			nItemValue = 1;
+			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("items[1] is ") + FString(Items[1].Get()->GetDefaultObject()->GetFName().ToString()));
+			break;
+		}
+		default:
+			break;
+		}
+		break;
+	}
+	//GREAT ITEM POOL
+	case 1:
+	{
+		switch (WhichItemFromPool)
+		{
+		case 0:
+		{
+			HeldItem = Items[2]; //Rocket Booster
+			nItemValue = 2;
+			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("items[2] is ") + FString(Items[2].Get()->GetDefaultObject()->GetFName().ToString()));
+			break;
+		}
+		default:
+			break;
+		}
+		break;
+	}
+	//COMMON ITEM POOL
+	case 2:
+	{
+		switch (WhichItemFromPool)
+		{
+		case 0:
+		{
+			HeldItem = Items[0]; //Green Snowball
+			nItemValue = 0;
+			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("items[0] is ") + FString(Items[0].Get()->GetDefaultObject()->GetFName().ToString()));
+			break;
+		}
+		default:
+			break;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
 
 // Function: Activate Held Item
 // Description: Used to spawn the item and determine where and how it spawns.
@@ -22,7 +81,7 @@ UItemController::UItemController()
 // Author(s): Jordan R. Douglas
 void UItemController::ActivateHeldItem(FVector uSpawnPosition, AActor* aItem, bool bIsBeingHeld)
 {
-	if (HeldItem == nullptr)
+	if (HeldItem == nullptr || nItemValue == -1)
 		return;
 
 	if (bIsBeingHeld)
@@ -35,8 +94,15 @@ void UItemController::ActivateHeldItem(FVector uSpawnPosition, AActor* aItem, bo
 	{
 		aItem->SetActorLocation(uSpawnPosition + uAdjustSpawn);
 	}
+
+	if (nItemValue == 3)
+	{
+		aItem->SetActorLocation(-uSpawnPosition + uAdjustSpawn);
+	}
+
 	HeldItem = nullptr;
 	uAdjustSpawn = FVector::ZeroVector;
+	nItemValue = -1;
 }
 
 // Function: Show Held Item UI
@@ -58,13 +124,14 @@ void UItemController::ShowHeldItemUI(AActor* aItem, bool bIsAPlayer)
 //	so that it may be called later with ActivateHeldItem().
 // 
 // Date Created: 06/07/22
-// Last Updated: 06/18/22
+// Last Updated: 07/18/22
 // 
 // Author(s): Jordan R. Douglas
-void UItemController::SetHeldItem(TSubclassOf<class AActor> aHeldItem, FVector ItemPositionAdjustment)
+void UItemController::SetHeldItem(TSubclassOf<class AActor> aHeldItem, FVector ItemPositionAdjustment, int ItemID)
 {
 	HeldItem = aHeldItem;
 	uAdjustSpawn = ItemPositionAdjustment;
+	nItemValue = ItemID;
 }
 
 // Function: Get Held Item
@@ -78,6 +145,40 @@ void UItemController::SetHeldItem(TSubclassOf<class AActor> aHeldItem, FVector I
 TSubclassOf<class AActor> UItemController::GetHeldItem()
 {
 	return HeldItem;
+}
+
+// Function: Set Item Timer
+// Description: Set the timer for the Item in use as to not have it activate
+// forever. Used for items like the Rocket Booster and Mind Freeze.
+// 
+// Date Created: 07/17/22
+// Last Updated: 07/17/22
+// 
+// Author(s): Jordan R. Douglas
+void UItemController::SetItemTimer(float fItemTimer)
+{
+	fItemTimeLimit = fItemTimer;
+}
+
+// Function: Reduce Item Timer
+// Description: Called whenever we have a valid Item Timer above 0. Each time
+// this function is called, it reduces the timer by either deltaTime or a custom
+// reducer that is greater than 0. This function will return false if the Timer
+// has not reached 0 or less, and true if it has reached 0 or less seconds.
+// 
+// Date Created: 07/17/22
+// Last Updated: 07/17/22
+// 
+// Author(s): Jordan R. Douglas
+bool UItemController::ReduceItemTimer(float deltaTime)
+{
+	//Did the timer finish?
+	if (fItemTimeLimit <= 0.0f)
+		return true;
+
+	//If it did not, let us reduce the current Timer and return false
+	fItemTimeLimit = fItemTimeLimit - deltaTime;
+	return false;
 }
 
 // Called when the game starts

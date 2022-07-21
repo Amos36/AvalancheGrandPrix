@@ -37,6 +37,43 @@ int UCompetitionController::GetCurrentPlaceInRace()
 	return CurrentPlaceInRace;
 }
 
+// Function: Get Item Priority
+// Description: Returns the Item Pool that the Character pulls from.
+// 1 = 6th - 8th Place in the Race
+// 2 = 2nd - 5th Place in the Race
+// 3 = 1st Place in the Race
+// 
+// Date Created: 07/19/22
+// Last Updated: 07/19/22
+// 
+// Author(s): Jordan R. Douglas
+int UCompetitionController::GetItemPriority()
+{
+	if (CurrentPlaceInRace < 5)
+	{
+		// 1 = 6th - 8th Place in the Race
+		return 1;
+	}
+
+	if (CurrentPlaceInRace < 1)
+	{
+		// 2 = 2nd - 5th Place in the Race
+		return 2;
+	}
+
+	if (CurrentPlaceInRace == 1)
+	{
+		// 3 = 1st Place in the Race
+		return 3;
+	}
+
+	else
+	{
+		//ERROR, we should not reach this point
+		return 0;
+	}
+}
+
 // Function: Check If Passing Is Valid
 // Description: Perform a check to see if the current Player has passed the opposing 
 //	Character. It will be called on both sides and should result in either the Player

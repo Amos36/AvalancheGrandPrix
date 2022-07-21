@@ -22,6 +22,9 @@ private:
 		int GetCurrentPlaceInRace();
 
 	UFUNCTION(BlueprintCallable, Category = "Competition Handlers")
+		int GetItemPriority();
+
+	UFUNCTION(BlueprintCallable, Category = "Competition Handlers")
 		void CheckIfPassingIsValid(AActor* YourPosition, AActor* OpponentPosition);
 
 public:

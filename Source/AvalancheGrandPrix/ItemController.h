@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "ItemController.generated.h"
 
-
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class AVALANCHEGRANDPRIX_API UItemController : public UActorComponent
 {
@@ -24,18 +23,30 @@ public:
 
 private:
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
+		void DetermineItem(int WhichPool, int WhichItemFromPool);
+
+	UFUNCTION(BlueprintCallable, Category = "Item Handling")
 		void ActivateHeldItem(FVector uSpawnPosition, AActor* aItem, bool bIsBeingHeld);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
 		void ShowHeldItemUI(AActor* aItem, bool bIsAPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
-		void SetHeldItem(TSubclassOf<AActor> aHeldItem, FVector ItemPositionAdjustment);
+		void SetHeldItem(TSubclassOf<AActor> aHeldItem, FVector ItemPositionAdjustment, int ItemID);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Handling")
 		TSubclassOf<class AActor> GetHeldItem();
 
+	UFUNCTION(BlueprintCallable, Category = "Item Handling")
+		void SetItemTimer(float fItemTimer);
+
+	UFUNCTION(BlueprintCallable, Category = "Item Handling")
+		bool ReduceItemTimer(float deltaTime);
+
 	FVector uAdjustSpawn;
+
+	float fItemTimeLimit;
+	int nItemValue = -1;
 
 protected:
 	// Called when the game starts
@@ -50,4 +61,10 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 		TSubclassOf<AActor> HeldItem;
+
+	//UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	// ConstructorHelpers::FObjectFinder<TSubclassOf<AActor>> TestActo(TSubclassOf<AActor>("Blueprint'/ Game / VehicleBP / Blueprints / Mystery_Box_BPs / Green_Snowball.Green_Snowball'"));
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		TArray<TSubclassOf<AActor>> Items;
 };
